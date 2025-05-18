@@ -1,0 +1,4 @@
+span[class*="clanTag"] {
+  display: none !important;
+  padding: 0 !important;
+}

@@ -1,0 +1,7 @@
+div[class*="message"][class*="hasReply"]:has(
+    div[id*="message-reply-context"] > svg[class*="userJoinSystemMessageIcon"]
+  )
+  div[class*="assetWrapper"] {
+  height: 3em !important;
+  width: 3em !important;
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Discord CSS Tweaks</title>
+
+  <style>
+    :root {
+      --primary-color: #111111;
+      --secondary-color: #404040;
+      --text-color: #ffffff;
+    }
+
+    html,
+    body {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      padding: 10px;
+      margin: 0px;
+    }
+
+    *:focus {
+      outline: none;
+    }
+  </style>
+
+  {% block head %}
+  {% endblock %}
+</head>
+
+<body>
+  <div class="root">
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
+
+{% block script %}
+{% endblock %}
+
+</html>

@@ -1,0 +1,167 @@
+{% extends "base.html.jinja" %}
+
+{% block head %}
+<style>
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-family: sans-serif;
+    cursor: pointer;
+    user-select: none;
+    margin: .5rem;
+  }
+
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: .3rem;
+    backdrop-filter: blur(6px);
+    position: relative;
+    transition: background .2s, border-color .2s;
+  }
+
+  input[type="checkbox"]:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+  }
+
+  input[type="checkbox"]:focus {
+    outline: 2px solid rgba(0, 0, 0, 0.2);
+    outline-offset: 2px;
+  }
+
+  input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 4px;
+    height: 8px;
+    border: solid #222;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
+    transform-origin: center;
+    transition: transform .1s ease-in-out;
+  }
+
+  input[type="checkbox"]:checked {
+    background: #fff;
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+
+  input[type="checkbox"]:checked::after {
+    transform: rotate(45deg) scale(1);
+  }
+</style>
+
+<style>
+  .container {
+    padding-bottom: 40px;
+  }
+
+  .bottom-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .metadata {
+    font-size: 12px;
+    color: #999;
+    background-color: #000;
+    padding: 5px;
+    border-radius: 5px 5px 0 0;
+
+    margin-right: 5px;
+
+    user-select: none;
+
+    text-align: right;
+    width: fit-content;
+    margin-left: auto;
+  }
+
+  #snippetUrl {
+    background-color: var(--secondary-color);
+    border: 0;
+
+    border-radius: 5px;
+
+    box-sizing: border-box;
+    padding: 10px;
+
+    font-size: 16px;
+    font-weight: 800;
+    font-family: monospace;
+    color: var(--text-color);
+  }
+</style>
+{%endblock%}
+
+
+{% block content %}
+<div class="container">
+  {% for item in items %}
+  <label>
+    <input type="checkbox" value="{{ item[0] }}">
+    {{ item[1] }}
+  </label><br>
+  {% endfor %}
+</div>
+
+<div class="bottom-container">
+  <a href="{{ repo['origin'] }}/tree/{{ repo['commit'] }}" target="_blank" class="metadata">
+    {{ repo["branch"] }}@{{ repo["commit"][:7] }}
+  </a>
+
+  <input type="text" id="snippetUrl" readonly>
+</div>
+{% endblock %}
+
+{% block script %}
+<script defer>
+  const BASE_URL = document.location.origin;
+
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const snippetUrl = document.getElementById('snippetUrl');
+  snippetUrl.value = ""
+
+  let enabledSnippets = [];
+
+  const mask = (indices) => {
+    let bitmask = 0;
+    for (const i of indices) {
+      bitmask |= 1 << i;
+    }
+
+    return bitmask;
+  }
+
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = false;
+
+    checkbox.addEventListener('change', () => {
+      enabledSnippets =
+        Array.from(checkboxes)
+          .filter(i => i.checked)
+          .map(i => parseInt(i.value))
+
+      if (enabledSnippets.length > 0) {
+        snippetUrl.value = `${BASE_URL}/snippets/${mask(enabledSnippets)}`;
+      } else {
+        snippetUrl.value = "";
+      }
+
+    });
+  });
+</script>
+{%endblock%}
