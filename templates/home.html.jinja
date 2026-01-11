@@ -1,225 +1,105 @@
 {% extends "base.html.jinja" %}
 
 {% block head %}
-<style>
-  label {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    font-family: sans-serif;
-    cursor: pointer;
-    user-select: none;
-    margin: .5rem;
-  }
-
-  input[type="checkbox"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 1.2rem;
-    height: 1.2rem;
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: .3rem;
-    backdrop-filter: blur(6px);
-    position: relative;
-    transition: background .2s, border-color .2s;
-  }
-
-  input[type="checkbox"]:hover {
-    border-color: rgba(255, 255, 255, 0.8);
-    cursor: pointer;
-  }
-
-  input[type="checkbox"]:focus {
-    outline: 2px solid rgba(0, 0, 0, 0.2);
-    outline-offset: 2px;
-  }
-
-  input[type="checkbox"]::after {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 5px;
-    width: 4px;
-    height: 8px;
-    border: solid #222;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg) scale(0);
-    transform-origin: center;
-    transition: transform .1s ease-in-out;
-  }
-
-  input[type="checkbox"]:checked {
-    background: #fff;
-    border-color: rgba(255, 255, 255, 0.8);
-  }
-
-  input[type="checkbox"]:checked::after {
-    transform: rotate(45deg) scale(1);
-  }
-</style>
-
-<style>
-  .container {
-    padding-bottom: 40px;
-  }
-
-  .bottom-container {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-
-    display: flex;
-    flex-direction: column;
-  }
-
-  .metadata {
-    font-size: 12px;
-    color: #999;
-    background-color: #000;
-    padding: 5px;
-    border-radius: 5px 5px 0 0;
-
-    margin-right: 5px;
-
-    user-select: none;
-
-    text-align: right;
-    width: fit-content;
-    margin-left: auto;
-  }
-
-  #snippet-container {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-
-  #snippet-url {
-    width: 100%;
-
-    background-color: var(--secondary-color);
-    border: 0;
-
-    border-radius: 5px;
-
-    box-sizing: border-box;
-    padding: 10px;
-
-    color: var(--text-color);
-    font-size: 20px;
-    font-weight: 800;
-    font-family: monospace;
-
-    padding-right: 2.5em;
-    transition: all 0.2s ease-in-out;
-  }
-
-  #snippet-url:hover {
-    cursor: pointer;
-  }
-
-  #copy-icon {
-    position: absolute;
-    right: 1em;
-    top: 50%;
-    width: 1.2em;
-    height: 1.2em;
-    transform: translateY(-50%);
-    cursor: pointer;
-    fill: var(--text-color);
-    transition: fill 0.2s;
-  }
-</style>
-{%endblock%}
-
+<link rel="stylesheet" href="/static/home.css">
+{% endblock %}
 
 {% block content %}
-<div class="container">
-  {% for item in items %}
-  <label>
-    <input type="checkbox" value="{{ item[0] }}">
-    {{ item[1] }}
-  </label><br>
+<main>
+  {% for groupName, groupSnippets in snippets %}
+    <div class="options-group">
+      <div class="group-label" data-target="{{ groupName }}-list">
+        {{ groupName }}
+      </div>
+
+      <div class="checkbox-list" id="{{ groupName }}-list">
+        {% for snippet in groupSnippets %}
+          <div class="checkbox-item">
+            <input
+              type="checkbox"
+              id="{{ snippet.ID }}"
+              value="{{ snippet.ID }}"
+            >
+
+            <label for="{{ snippet.ID }}">
+              {{ snippet.Name }}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   {% endfor %}
-</div>
 
-<div class="bottom-container">
-  <a href="{{ repo['origin'] }}/tree/{{ repo['commit'] }}" target="_blank" class="metadata">
-    {{ repo["branch"] }}@{{ repo["commit"][:7] }}
-  </a>
+  <div class="subtitle">
+    <a href="{{ repository.Origin }}/tree/{{ repository.Commit }}" target="_blank" class="branch-info">
+      <span class="branch-name" id="branchName">{{ repository.Branch }}@</span>
+      <span class="branch-commit" id="branchCommit">{{ repository.Commit }}</span>
+    </a>
+  </div>
+</main>
 
-  <div id="snippet-container">
-    <input type="text" id="snippet-url" placeholder="@import '...'" readonly>
-
-    <svg id="copy-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-      <path
-        d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
-    </svg>
+<div class="footer">
+  <div class="footer-content">
+    <div class="url-container" id="urlContainer">
+      <div class="url-display" id="urlDisplay"></div>
+      
+      <svg class="copy-icon" id="copyIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+      </svg>
+    </div>
   </div>
 </div>
 {% endblock %}
 
 {% block script %}
 <script defer>
-  let enabledSnippets = [];
-
   const BASE_URL = document.location.origin;
+  const UNIVERSE_SIZE = 4096;
 
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  const snippetUrl = document.getElementById('snippet-url');
-  const copyIcon = document.getElementById('copy-icon');
-  const clipPath = copyIcon.innerHTML;
-  const checkSVG = `
-    <path d="M9 16.2l-3.5-3.5 1.4-1.4L9 
-      13.4l7.1-7.1 1.4 1.4z"/>
-  `;
-
-  snippetUrl.value = "" // reset on page load
-
-  const copySnippet = async () => {
-    const value = snippetUrl.value;
-    if (value === "") {
-      return;
-    }
-
-    await navigator.clipboard.writeText(value);
-    copyIcon.innerHTML = checkSVG;
-
-    setTimeout(() => {
-      copyIcon.innerHTML = clipPath;
-    }, 1200);
-  }
-
-  snippetUrl.addEventListener('click', copySnippet);
-  copyIcon.addEventListener('click', copySnippet);
-
-  const mask = (indices) => {
-    let bitmask = 0;
-    for (const i of indices) {
-      bitmask |= 1 << i;
-    }
-
-    return bitmask;
-  }
-
-  checkboxes.forEach((checkbox) => {
-    checkbox.checked = false; // reset on page load
-
-    checkbox.addEventListener('change', () => {
-      enabledSnippets =
-        Array.from(checkboxes)
-          .filter(i => i.checked)
-          .map(i => parseInt(i.value))
-
-      if (enabledSnippets.length > 0) {
-        snippetUrl.value = `@import '${BASE_URL}/snippets/${mask(enabledSnippets)}';`;
-      } else {
-        snippetUrl.value = "";
-      }
-
+  const groupLabels = document.querySelectorAll('.group-label');
+  groupLabels.forEach(label => {
+    label.addEventListener('click', () => {
+      const targetId = label.getAttribute('data-target');
+      const checkboxList = document.getElementById(targetId);
+      
+      label.classList.toggle('collapsed');
+      checkboxList.classList.toggle('hidden');
     });
   });
+
+  const urlDisplay = document.getElementById('urlDisplay');
+  function updateUrl() {
+    const selectedIds = Array.from(checkboxes)
+      .filter(cb => cb.checked)
+      .map(cb => parseInt(cb.value, 10));
+
+    const slug = selectedIds.join(",") || "..."
+    urlDisplay.textContent = `@import '${BASE_URL}/s/${slug}';`;
+  }
+
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateUrl);
+  });
+
+  const copyIcon = document.getElementById('copyIcon');
+  function copyToClipboard() {
+    const url = urlDisplay.textContent;
+    navigator.clipboard.writeText(url).then(() => {
+      urlContainer.classList.add('copied');
+      copyIcon.innerHTML = '<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>';
+      
+      setTimeout(() => {
+        urlContainer.classList.remove('copied');
+        copyIcon.innerHTML = '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>';
+      }, 2000);
+    });
+  }
+
+  const urlContainer = document.getElementById('urlContainer');
+  urlContainer.addEventListener('click', copyToClipboard);
+
+  updateUrl();
 </script>
 {%endblock%}

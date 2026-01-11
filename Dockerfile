@@ -1,22 +1,32 @@
-FROM ghcr.io/astral-sh/uv:python3.8-bookworm-slim
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
-ENV UV_COMPILE_BYTECODE=1
-ENV UV_LINK_MODE=copy
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-dev
+COPY . .
 
-COPY . /app
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev
+ARG GIT_COMMIT
+ARG GIT_BRANCH
+ARG GIT_ORIGIN
 
-ENV PATH="/app/.venv/bin:$PATH"
+RUN go build -ldflags \
+    "-X 'main.CommitHash=$GIT_COMMIT' \
+     -X 'main.Branch=$GIT_BRANCH' \
+     -X 'main.Origin=$GIT_ORIGIN'" \
+    -o server .
 
-ENTRYPOINT []
-EXPOSE 8000
+FROM alpine:latest
 
-CMD ["litestar", "run", "--host", "0.0.0.0", "--port", "8000"]
+WORKDIR /app
+
+COPY --from=builder /app/server .
+
+COPY snippets/ ./snippets/
+COPY templates/ ./templates/
+COPY static/ ./static/
+
+EXPOSE 8080
+
+CMD ["./server"]
