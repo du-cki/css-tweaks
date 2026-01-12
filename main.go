@@ -18,8 +18,8 @@ import (
 var LookUp SnippetLookUp
 
 var (
-	CommitHash = "dev"
-	Branch     = "unknown"
+	Branch     = "dev"
+	CommitHash = "unknown"
 	Origin     = "unknown"
 )
 

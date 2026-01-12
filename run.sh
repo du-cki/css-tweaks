@@ -33,8 +33,8 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
 else
     echo "→ warning: Not a git repository. Using default values."
 
-    export GIT_COMMIT="dev"
-    export GIT_BRANCH="unknown"
+    export GIT_BRANCH="dev"
+    export GIT_COMMIT="unknown"
     export GIT_ORIGIN="unknown"
 fi
 
