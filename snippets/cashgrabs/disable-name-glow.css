@@ -1,0 +1,13 @@
+[class^="threeColorGradient"],
+[class^="twoColorGradient"] {
+  &[class^="usernameGradient"] {
+    color: color-mix(in lab, var(--custom-gradient-color-1), var(--custom-gradient-color-2));
+    background: none;
+    -webkit-text-fill-color: initial;
+  }
+
+  &::after,
+  &[class^="nameGlow"] {
+    display: none;
+  }
+}

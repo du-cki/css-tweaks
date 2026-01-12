@@ -1,0 +1,26 @@
+.c322aadb96ff59c9-search>.c322aadb96ff59c9-searchBar {
+  width: 32px !important;
+  background: none;
+  border-color: transparent;
+  transition: background .25s ease,
+    width .25s ease,
+    border-color .25s ease;
+}
+
+.c322aadb96ff59c9-search>.c322aadb96ff59c9-searchBar .DraftEditor-root {
+  padding-right: 3px !important;
+}
+
+.c322aadb96ff59c9-search.c322aadb96ff59c9-open>.c322aadb96ff59c9-searchBar {
+  width: 244px !important;
+  background: var(--background-gradient-low, var(--input-background-default));
+  border-color: var(--input-border-default);
+}
+
+.c322aadb96ff59c9-search>.c322aadb96ff59c9-searchBar .c322aadb96ff59c9-icon {
+  margin-right: 7px;
+}
+
+._496769951eb140fe-search {
+  margin: 0 !important;
+}

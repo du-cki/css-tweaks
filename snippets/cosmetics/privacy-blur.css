@@ -1,0 +1,20 @@
+.icon__6e9f8, /* Server Icons */
+.icon_f34534 /* Server Icons in folders */ {
+  filter: blur(4px);
+}
+
+.avatar_c19a55, .svg__44b0c > foreignObject, .replyAvatar_c19a55 /* User Avatars */ {
+  filter: blur(4px);
+}
+
+.avatarDecoration_c19a55, .avatarDecoration__44b0c /* User Avatar Decorations */ {
+  filter: blur(4px);
+}
+
+[class^="username_"], .name__20a53, .header__00943 .defaultColor__4bd52, .nickname__63ed3, .userTagUsername__63ed3, .guildTagContainer__63ed3 /* Usernames and Tags */ {
+  filter: blur(4px);
+}
+
+.accountNameText__9bfb9 /* Usernames on linked accounts */ {
+  filter: blur(4px);
+}
